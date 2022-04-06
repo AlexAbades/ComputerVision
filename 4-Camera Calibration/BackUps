@@ -1,0 +1,41 @@
+def matrix_B_P_original(q, Q):
+    """
+    Creates a B matrix applying Kroneker product. 
+        B = Qi⊗[qi]
+        -1st. Corssproduct on vector q in itslef (qxq):  Uses the approach of a skew symetric matrix.
+        -2nd. Krokener product: Q⊗[q]_x
+    
+    q: Projection of the Q into the camera. 2D Points MUST be in Homogeneous Coordinates. 
+    Q: 3D Points. Can be in homogenous or inhomogenous coordinates.
+    
+    The B matrix it's used to calculate the P matrix as we are using a set of points on 3D in homogenous 
+    form and it's projections into the camera plane also in homogenous form.
+    q1: Projection of the p1 into the camera. 2D Points MUST be in Homogeneous Coordinates. 
+    p1: 3D Points. Can be in homogenous or inhomogenous coordinates. 
+    """
+    
+    # Squeez dimesions of q to apply Cross Operation 
+    q = squeezdim(q)
+    # Check that q it's in homogenous form, dimension 3 [sx, sy, s]
+    if q.shape != (3,):
+        raise ValueError('The vector q Must be in Homogenous form: [sx, sy, s], and it is: ', q)
+    # Create the Skeweness matrix [p1]x
+    q = crossOp(q)
+    # Squeeze vector Q
+    Q = squeezdim(Q)
+    # Check dim of vector Q
+    if Q.shape == (3,):
+        Q = np.append(Q, 1)
+    elif Q.shape == (4,):
+        pass
+    else:
+        raise ValueError('The vector p Must be a 3D point in Homogenous or Inhomogenous coordinates: [X,Y,Z] or [X,Y,Z,1]. p value: ', Q)
+        
+    # Appply Kroneker Product
+    for i in range(len(Q)):
+        # Cjeck if the first element it's 0 to create matrix
+        if not i:
+            B = Q[i] * q
+        else:  # If it's not the first element just concatenate the matrices
+            B = np.concatenate((B, Q[i]*q),1)
+    return B
