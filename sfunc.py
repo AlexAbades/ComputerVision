@@ -544,6 +544,7 @@ def triangulate(qs:list, P:list):
     idx = np.where(s==min(s))
     # Select the eigenvector correspondent to the eigenvalue
     Q = eigVec[idx].T
+    
     # Normalize 
     Q = Q/Q[-1]
     
