@@ -1,4 +1,6 @@
-def gaussian1DKernel(sigma:int, scale:int=5 ):
+import numpy as np
+
+def gaussian1DKernel(sigma:int, scale:int=5, x:int=False):
     """
     sigma: stadard deviation of the gaussian distribution.
     scale: Range of x times the stadard deviatiion for the x values where we'll evaluate the gaussian.    
@@ -11,9 +13,12 @@ def gaussian1DKernel(sigma:int, scale:int=5 ):
     from run time O(2*n) --> O(n^2)
     """
     # Width of the Gaussian
-    h = np.ceil(scale*sigma)
-    x = np.arange(-h, h+1)
-    
+    if not x:
+        h = np.ceil(scale*sigma)
+        x = np.arange(-h, h+1)
+    else:
+        x = np.arange(-x,x+1)
+        
     # Cte of the Gaussian
     c = (1)/(np.sqrt(2*np.pi)*sigma)
     c_exp = np.exp((-x**2)/(2*sigma**2))
